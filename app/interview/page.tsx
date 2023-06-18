@@ -4,7 +4,7 @@ import { useRef, useState, ChangeEvent } from "react";
 
 import { speechToText } from "@/utils/speech_to_text";
 import { getGPTResponse } from "@/utils/gpt";
-import { playTextToSpeech } from "@/utils/text_to_speech";
+import { getTextToSpeech } from "@/utils/text_to_speech";
 
 enum Stage {
   NotStarted,
@@ -16,6 +16,7 @@ enum Stage {
 export default function Interview() {
   const [name, setName] = useState("");
   const [jobTitle, setJobTitle] = useState("");
+  const [isAISpeaking, setIsAISpeaking] = useState(false);
 
   const onNameChange = (event: ChangeEvent<HTMLInputElement>) => {
     setName(event.target.value);
@@ -72,7 +73,16 @@ export default function Interview() {
       messages.push({ role: "assistant", content: response });
 
       if (audioPlayerRef.current) {
-        await playTextToSpeech(response, audioPlayerRef.current);
+        console.log("Generating audio...");
+        const urlAudioBlob = await getTextToSpeech(response);
+        audioPlayerRef.current.src = urlAudioBlob;
+        console.log("Playing audio...");
+        setIsAISpeaking(true);
+        await audioPlayerRef.current.play();
+        while (!audioPlayerRef.current.ended) {
+          await new Promise((resolve) => setTimeout(resolve, 1000));
+        }
+        setIsAISpeaking(false);
       }
 
       if (!shouldContinueRef.current) {
@@ -157,7 +167,7 @@ export default function Interview() {
       <span className="relative flex h-40 w-40 mx-auto">
         <span
           className={`${
-            stage === Stage.Interviewing ? "animate-ping" : ""
+            isAISpeaking ? "animate-ping" : ""
           } absolute inline-flex h-full w-full rounded-full bg-slate-400 opacity-75`}
         ></span>
         <span className="relative inline-flex rounded-full h-40 w-40 bg-slate-500"></span>
