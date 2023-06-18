@@ -1,4 +1,4 @@
-import { Configuration, OpenAIApi, ChatCompletionRequestMessage } from "openai";
+import { ChatCompletionRequestMessage } from "openai";
 
 export async function getGPTResponse(messages: ChatCompletionRequestMessage[]) {
   const requestOptions = {
