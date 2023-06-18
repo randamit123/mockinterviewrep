@@ -144,9 +144,10 @@ export default function Interview() {
   };
 
   return (
-    <div>
-      <div className="flex flex-col justify-center h-screen">
-        <div className="my-auto">
+    <div className="h-screen w-screen">
+      <div className="flex h-fit w-full flex-col justify-center items-center overflow-auto">
+        <div className="h-36 w-full"/>
+        <div>
           <Image
             className="mx-auto"
             alt="logo"
@@ -174,13 +175,18 @@ export default function Interview() {
             </button>
           </div>
         </div>
+        {stage == Stage.Ended && (
+          <div className="mt-16 text-2xl mx-20">
+            <h1 className="text-center">Session Notes:</h1><br/>
+            {
+              interviewAnalysis.split("\n").map((line, i) => (
+                <p key={i} className="text-justify mt-5">{line}</p>
+              ))
+            }
+          </div>
+        )}
+        <div className="h-36 w-full"/>
       </div>
-      {stage == Stage.Ended && (
-        <div className="mt-8 text-2xl text-center">
-          <h1>Session Notes:</h1>
-          <p>{interviewAnalysis}</p>
-        </div>
-      )}
     </div>
   );
 }
