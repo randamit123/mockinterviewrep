@@ -1,8 +1,18 @@
+import Image from "next/image"
+
 export default function Home() {
   return (
     <div className='flex flex-col justify-center h-screen'>
       <div className='my-auto'>
-        <div className='mx-auto text-6xl font-bold text-center'>
+        <Image
+          className="mx-auto"
+          alt="logo"
+          src="/logo.svg"
+          height={134}
+          width={363}
+          priority
+        />
+        <div className='mx-auto mt-8 text-6xl font-bold text-center'>
           Welcome!
         </div>
         <div className='w-80 mx-auto mt-16'>
