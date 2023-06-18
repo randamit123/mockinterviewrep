@@ -155,9 +155,9 @@ export default function Interview() {
           <Image
             className="mx-auto"
             alt="logo"
-            src="/logo.svg"
-            height={134}
-            width={363}
+            src="/logo.png"
+            height={506 * 0.25}
+            width={1419 * 0.25}
             priority
           />
           <div className="mx-auto mt-8 text-6xl font-bold text-center">

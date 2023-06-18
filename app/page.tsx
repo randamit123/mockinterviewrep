@@ -18,9 +18,9 @@ export default function Home() {
         <nav className="">
           <Image
             alt="logo"
-            src="/logo.svg"
-            height={134 * 0.7}
-            width={363 * 0.7}
+            src="/logo.png"
+            height={506 * 0.2}
+            width={1419 * 0.2}
             priority
           />
         </nav>
