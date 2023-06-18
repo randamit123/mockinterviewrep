@@ -17,6 +17,8 @@ export default function Interview() {
   const [name, setName] = useState("");
   const [jobTitle, setJobTitle] = useState("");
   const [isAISpeaking, setIsAISpeaking] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isListening, setIsListening] = useState(false);
 
   const onNameChange = (event: ChangeEvent<HTMLInputElement>) => {
     setName(event.target.value);
@@ -64,6 +66,7 @@ export default function Interview() {
     const messages: any = [{ role: "system", content: intialPrompt }];
 
     while (true) {
+      setIsLoading(true);
       const response = await getGPTResponse(messages);
       if (response === undefined) {
         console.error("GPT3 API returned undefined");
@@ -77,6 +80,7 @@ export default function Interview() {
         const urlAudioBlob = await getTextToSpeech(response);
         audioPlayerRef.current.src = urlAudioBlob;
         console.log("Playing audio...");
+        setIsLoading(false);
         setIsAISpeaking(true);
         await audioPlayerRef.current.play();
         while (!audioPlayerRef.current.ended) {
@@ -90,7 +94,9 @@ export default function Interview() {
       }
 
       console.log("Listening...");
+      setIsListening(true);
       const transcript = await speechToText();
+      setIsListening(false);
       console.log("User:", transcript);
       messages.push({ role: "user", content: transcript });
       if (transcript.toLowerCase() === "end interview") {
@@ -168,9 +174,17 @@ export default function Interview() {
         <span
           className={`${
             isAISpeaking ? "animate-ping" : ""
-          } absolute inline-flex h-full w-full rounded-full bg-slate-400 opacity-75`}
+          } absolute inline-flex h-full w-full rounded-full ${
+            isLoading ? "bg-amber-100"
+            : isListening ? "bg-green-300"
+            : "bg-slate-400"
+          } opacity-75`}
         ></span>
-        <span className="relative inline-flex rounded-full h-40 w-40 bg-slate-500"></span>
+        <span className={`relative inline-flex rounded-full h-40 w-40 ${
+          isLoading ? "bg-amber-200"
+          : isListening ? "bg-green-400"
+          : "bg-slate-500"
+        }`}></span>
       </span>
       {/* <div
         className={`${
