@@ -2,7 +2,7 @@
 
 import { useRef, useState } from "react";
 import Image from "next/image";
-import { useSearchParams } from 'next/navigation'
+import { useSearchParams } from "next/navigation";
 
 import { speechToText } from "@/utils/speech_to_text";
 import { getGPTResponse } from "@/utils/gpt";
@@ -17,7 +17,7 @@ enum Stage {
 
 export default function Interview() {
   const searchParams = useSearchParams();
-  const name = searchParams.get('name') || "John";
+  const name = searchParams.get("name") || "John";
 
   const audioPlayerRef = useRef<HTMLAudioElement>(null);
   const [interviewAnalysis, setInterviewAnalysis] = useState("");
@@ -62,7 +62,7 @@ export default function Interview() {
       if (response === undefined) {
         console.error("GPT3 API returned undefined");
         continue;
-      };
+      }
       console.log("Assistant: ", response);
       messages.push({ role: "assistant", content: response });
 
@@ -129,7 +129,7 @@ export default function Interview() {
     if (response === undefined) {
       console.error("GPT3 API returned undefined");
       return;
-    };
+    }
     console.log("Assistant: ", response);
     setInterviewAnalysis(response);
     setStage(Stage.Ended);
@@ -148,49 +148,60 @@ export default function Interview() {
   };
 
   return (
-    <div className="h-screen w-screen">
-      <div className="flex h-fit w-full flex-col justify-center items-center overflow-auto">
-        <div className="h-36 w-full"/>
-        <div>
-          <Image
-            className="mx-auto"
-            alt="logo"
-            src="/logo.png"
-            height={506 * 0.25}
-            width={1419 * 0.25}
-            priority
-          />
-          <div className="mx-auto mt-8 text-6xl font-bold text-center">
-            {`Let's get started!`}
-          </div>
-          <div className="w-80 mx-auto mt-16">
-            <audio ref={audioPlayerRef}></audio>
-            <button
-              className="h-16 w-full mt-8 bg-gray-400 text-white text-3xl"
-              onClick={toggleInterview}
-              disabled={stage === Stage.Ending || stage === Stage.Ended}
-            >
-              {
-                stage == Stage.NotStarted ? "Start Interview"
-                : stage == Stage.Interviewing ? "End Interview"
-                : stage == Stage.Ending ? "Ending interview..."
-                : "Interview Ended"
-              }
-            </button>
-          </div>
-        </div>
-        {stage == Stage.Ended && (
-          <div className="mt-16 text-2xl mx-20">
-            <h1 className="text-center">Session Notes:</h1><br/>
-            {
-              interviewAnalysis.split("\n").map((line, i) => (
-                <p key={i} className="text-justify mt-5">{line}</p>
-              ))
-            }
-          </div>
-        )}
-        <div className="h-36 w-full"/>
+    <div className="min-h-[80vh] flex flex-col gap-12 pt-28">
+      <span className="relative flex h-40 w-40 mx-auto">
+        <span
+          className={`${
+            stage === Stage.Interviewing ? "animate-ping" : ""
+          } absolute inline-flex h-full w-full rounded-full bg-slate-400 opacity-75`}
+        ></span>
+        <span className="relative inline-flex rounded-full h-40 w-40 bg-slate-500"></span>
+      </span>
+      {/* <div
+        className={`${
+          stage === Stage.Interviewing ? "animate-pulse" : ""
+        } rounded-full bg-slate-200 w-full max-h-80 max-w-80 aspect-square mx-auto`}
+      ></div> */}
+      <div className="flex flex-col md:flex-row gap-8 items-center justify-center mt-12">
+        <audio ref={audioPlayerRef}></audio>
+        <input
+          type="text"
+          placeholder="Your Name"
+          className="border px-6 py-4 rounded-xl"
+        />
+        <input
+          type="text"
+          placeholder="Job Title"
+          className="border px-6 py-4 rounded-xl"
+        />
+        <button
+          className="button text-lg"
+          data-btn-intent="primary"
+          data-btn-size="large"
+          onClick={toggleInterview}
+          disabled={stage === Stage.Ending || stage === Stage.Ended}
+        >
+          {stage == Stage.NotStarted
+            ? "Start Interview"
+            : stage == Stage.Interviewing
+            ? "End Interview"
+            : stage == Stage.Ending
+            ? "Ending interview..."
+            : "Interview Ended"}
+        </button>
       </div>
+      {stage == Stage.Ended && (
+        <div className="mt-16 mx-20">
+          <h1 className="text-center text-2xl">Session Notes:</h1>
+          <br />
+          {interviewAnalysis.split("\n").map((line, i) => (
+            <p key={i} className="text-justify mt-5 text-md">
+              {line}
+            </p>
+          ))}
+        </div>
+      )}
+      <div className="h-36 w-full" />
     </div>
   );
 }
