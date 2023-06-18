@@ -1,4 +1,4 @@
-export async function getTextToSpeech(text: any) {
+async function getTextToSpeech(text: string) {
   var apiKey = process.env.NEXT_PUBLIC_ELEVEN_API;
   var voiceId = "21m00Tcm4TlvDq8ikWAM";
   const response = await fetch(
@@ -24,4 +24,15 @@ export async function getTextToSpeech(text: any) {
   const blob = await response.blob();
   const audioUrl = URL.createObjectURL(blob);
   return audioUrl;
+}
+
+export const playTextToSpeech = async (text: string, audioElement: HTMLAudioElement) => {
+  console.log("Generating audio...");
+  const urlAudioBlob = await getTextToSpeech(text);
+  audioElement.src = urlAudioBlob;
+  console.log("Playing audio...");
+  await audioElement.play();
+  while (!audioElement.ended) {
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+  }
 }

@@ -21,5 +21,8 @@ export async function getGPTResponse(messages: ChatCompletionRequestMessage[]) {
   );
   const data = await response.json();
 
-  return data.choices[0].message?.content;
+  const result = data?.choices[0]?.message?.content;
+  if (typeof result === 'string') {
+    return result;
+  }
 }
