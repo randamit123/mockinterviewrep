@@ -1,8 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
-import Image from "next/image";
-import { useSearchParams } from "next/navigation";
+import { useRef, useState, ChangeEvent } from "react";
 
 import { speechToText } from "@/utils/speech_to_text";
 import { getGPTResponse } from "@/utils/gpt";
@@ -16,8 +14,15 @@ enum Stage {
 }
 
 export default function Interview() {
-  const searchParams = useSearchParams();
-  const name = searchParams.get("name") || "John";
+  const [name, setName] = useState("");
+  const [jobTitle, setJobTitle] = useState("");
+
+  const onNameChange = (event: ChangeEvent<HTMLInputElement>) => {
+    setName(event.target.value);
+  };
+  const onJobTitleChange = (event: ChangeEvent<HTMLInputElement>) => {
+    setJobTitle(event.target.value);
+  };
 
   const audioPlayerRef = useRef<HTMLAudioElement>(null);
   const [interviewAnalysis, setInterviewAnalysis] = useState("");
@@ -168,18 +173,20 @@ export default function Interview() {
           type="text"
           placeholder="Your Name"
           className="border px-6 py-4 rounded-xl"
+          onChange={onNameChange}
         />
         <input
           type="text"
           placeholder="Job Title"
           className="border px-6 py-4 rounded-xl"
+          onChange={onJobTitleChange}
         />
         <button
           className="button text-lg"
           data-btn-intent="primary"
           data-btn-size="large"
           onClick={toggleInterview}
-          disabled={stage === Stage.Ending || stage === Stage.Ended}
+          disabled={stage === Stage.Ending || stage === Stage.Ended || name == ""}
         >
           {stage == Stage.NotStarted
             ? "Start Interview"

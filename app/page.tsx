@@ -1,17 +1,6 @@
-"use client";
-
-import { ChangeEvent, useState } from "react";
-
-import Image from "next/image";
 import Link from "next/link";
 
 export default function Home() {
-  const [name, setName] = useState("");
-
-  const onNameChange = (event: ChangeEvent<HTMLInputElement>) => {
-    setName(event.target.value);
-  };
-
   return (
     <main className="grid w-full mx-auto min-h-[80vh]">
       <div className="flex gap-8 flex-col items-center justify-center">
