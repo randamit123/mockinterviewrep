@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import Image from "next/image";
 
 import { speechToText } from "@/utils/SpeechToText";
@@ -9,6 +9,8 @@ import { getTextToSpeech } from "@/utils/TextToSpeech";
 
 export default function Interview() {
   const audioPlayerRef = useRef<HTMLAudioElement>(null);
+  const [showHiddenSection, setShowHiddenSection] = useState(false);
+  const [interviewAnalysis, setInterviewAnalysis] = useState("");
 
   const driveInterview = async () => {
     const intialPrompt = `
@@ -41,9 +43,7 @@ export default function Interview() {
       Now, start the interview with step 1.
     `;
 
-    const messages: any = [
-      { role: "system", content: intialPrompt },
-    ];
+    const messages: any = [{ role: "system", content: intialPrompt }];
 
     while (true) {
       const response = await getGPTResponse(messages);
@@ -63,12 +63,41 @@ export default function Interview() {
 
       console.log("Listening...");
       const transcript = await speechToText();
-      console.log("User :", transcript);
+      console.log("User:", transcript);
       messages.push({ role: "user", content: transcript });
+      if (transcript.toLowerCase() === "end interview") {
+        messages.push({
+          role: "user",
+          content: `Based on the conversation in the mock interview, please provide an analysis of the interviewee's strengths and weaknesses. Consider their answers, communication skills, technical knowledge, and overall performance. Highlight specific areas where they excelled and areas that could be improved.
+
+          Strengths:
+          1. Mention the interviewee's strong points, such as well-articulated responses, clear communication, or solid technical knowledge.
+          2. Highlight any notable achievements or skills demonstrated during the interview.
+          3. Provide specific examples to support your assessment of their strengths.
+          
+          Weaknesses:
+          1. Identify areas where the interviewee struggled or could improve, such as incomplete answers, lack of technical depth, or difficulty in explaining concepts.
+          2. Suggest ways in which they could enhance their performance, such as studying specific topics or practicing interview scenarios.
+          3. Again, provide specific examples to illustrate their weaknesses or areas for improvement.
+          
+          Overall Assessment:
+          1. Offer an overall assessment of the interviewee's performance, taking into account their strengths and weaknesses.
+          2. Provide constructive feedback on how they can further develop their interview skills.
+          3. Encourage them to reflect on their performance and suggest ways they can enhance their future interviews.
+          
+          Please write a detailed analysis of the interviewee's performance, addressing the points mentioned above. Remember to be constructive and supportive in your feedback.`,
+        });
+        const notes = await getGPTResponse(messages);
+        setInterviewAnalysis(notes);
+        console.log(notes);
+        setShowHiddenSection(true);
+        return;
+      }
     }
   };
 
   const startInterview = () => {
+    setShowHiddenSection(false);
     driveInterview();
   };
 
@@ -98,6 +127,13 @@ export default function Interview() {
           </div>
         </div>
       </div>
+      {showHiddenSection && (
+        <div className="mt-8 text-2xl text-center">
+          <h1>Session Notes:</h1>
+          <h1>Session Notes:</h1>
+          <p>{interviewAnalysis}</p>
+        </div>
+      )}
     </div>
   );
 }
