@@ -1,7 +1,5 @@
-"use client"
-
-import { speechToText } from "@/utils/SpeechToText"
 import Image from "next/image"
+import Link from "next/link";
 
 export default function Home() {
   return (
@@ -26,16 +24,7 @@ export default function Home() {
             <option value="java">Consulting Interview</option>
             <option value="golang">Banking interview</option>
           </select>
-          <button className='h-16 w-full mt-8 bg-gray-400 text-white text-3xl' onClick={() => {
-            speechToText()
-            .then((transcript) => {
-              console.log("Final transcript:", transcript);
-            })
-            .catch((error) => {
-              console.error(error);
-            });
-            
-          }}>Start</button>
+          <Link className='w-full mt-8 bg-gray-400 text-white text-3xl p-4 block text-center' href="/interview">Get started!</Link>
         </div>
       </div>
     </div>

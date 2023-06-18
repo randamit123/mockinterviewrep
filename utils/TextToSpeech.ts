@@ -1,5 +1,5 @@
-export async function getTextToSpeech(text : string) {
-  var apiKey = "3adbbe3ad3f423b859e1edc87cd51959";
+export async function getTextToSpeech(text: any) {
+  var apiKey = process.env.NEXT_PUBLIC_ELEVEN_API;
   var voiceId = "21m00Tcm4TlvDq8ikWAM";
   const response = await fetch(
     `https://api.elevenlabs.io/v1/text-to-speech/${voiceId}`,
@@ -7,7 +7,7 @@ export async function getTextToSpeech(text : string) {
       method: "POST",
       headers: {
         accept: "audio/mpeg",
-        "xi-api-key": apiKey,
+        "xi-api-key": String(apiKey),
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
