@@ -2,6 +2,7 @@
 
 import { useRef, useState } from "react";
 import Image from "next/image";
+import { useSearchParams } from 'next/navigation'
 
 import { speechToText } from "@/utils/speech_to_text";
 import { getGPTResponse } from "@/utils/gpt";
@@ -15,6 +16,9 @@ enum Stage {
 }
 
 export default function Interview() {
+  const searchParams = useSearchParams();
+  const name = searchParams.get('name') || "John";
+
   const audioPlayerRef = useRef<HTMLAudioElement>(null);
   const [interviewAnalysis, setInterviewAnalysis] = useState("");
   const shouldContinueRef = useRef(true);
@@ -29,7 +33,7 @@ export default function Interview() {
       the role, industry, and our company, while naturally guiding the
       conversation.
 
-      You are ready to help John rock his interview for a junior
+      You are ready to help ${name} rock his interview for a junior
       front-end engineering role at SHMOOGLE, our company that's similar
       to Meta, Google, and Amazon.
 
@@ -38,12 +42,12 @@ export default function Interview() {
       interview.
 
       When you are told "End Interview", analyze our conversation and
-      highlight how John can improve his answers.
+      highlight how ${name} can improve his answers.
 
       Here's how the interview will go:
         1.  An introduction from you (stay in character)
         2.  First Scenario question
-        3.  Wait for John's (the user's) response
+        3.  Wait for ${name}'s (the user's) response
         4.  Ask any relevant follow-up questions or seek further
             clarification.
         5.  Repeat steps 2-4 until you are told "End Interview"

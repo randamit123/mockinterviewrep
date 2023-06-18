@@ -1,7 +1,17 @@
+"use client";
+
+import { ChangeEvent, useState } from "react";
+
 import Image from "next/image"
 import Link from "next/link";
 
 export default function Home() {
+  const [name, setName] = useState("");
+
+  const onNameChange = (event: ChangeEvent<HTMLInputElement>) => {
+    setName(event.target.value);
+  };
+
   return (
     <div className='flex flex-col justify-center h-screen'>
       <div className='my-auto'>
@@ -17,14 +27,27 @@ export default function Home() {
           Welcome!
         </div>
         <div className='w-80 mx-auto mt-16'>
-          <input type='text' placeholder='Your Name' className='h-16 w-full outline outline-1 outline-black outline-offset-0 p-5'/>
+          <input
+            type='text'
+            placeholder='Your first name'
+            className='h-16 w-full outline outline-1 outline-black outline-offset-0 p-5'
+            onChange={onNameChange}
+          />
           <select className='h-16 w-full outline outline-1 outline-black outline-offset-0 mt-8 p-5'>
             <option value="javascript">SWE Interview</option>
-            <option value="php">PM Interview</option>
-            <option value="java">Consulting Interview</option>
-            <option value="golang">Banking interview</option>
+            <option value="php" disabled>PM Interview (coming soon)</option>
+            <option value="java" disabled>Consulting Interview (coming soon)</option>
+            <option value="golang" disabled>Banking interview (coming soon)</option>
           </select>
-          <Link className='w-full mt-8 bg-gray-400 text-white text-3xl p-4 block text-center' href="/interview">Get started!</Link>
+          <Link
+            className={`
+              w-full mt-8 bg-gray-400 text-white text-3xl p-4 block
+              text-center ${name !== "" ? "" : "pointer-events-none"}
+            `}
+            href={`/interview?name=${name}`}
+          >
+            Get started!
+          </Link>
         </div>
       </div>
     </div>
