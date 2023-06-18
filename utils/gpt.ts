@@ -1,19 +1,6 @@
 import { Configuration, OpenAIApi, ChatCompletionRequestMessage } from "openai";
 
-/*
-const configuration = new Configuration({
-  organization: "org-EKq2MTDgVPY84mh3CENbt66k",
-  apiKey: process.env.OPENAI_API_KEY,
-});
-
-const openai = new OpenAIApi(configuration);
-
-const prompt = "";*/
-
-export async function getGPTResponse(
-  history: ChatCompletionRequestMessage[],
-  text: any
-) {
+export async function getGPTResponse(messages: ChatCompletionRequestMessage[]) {
   const requestOptions = {
     method: "POST",
     headers: {
@@ -23,7 +10,8 @@ export async function getGPTResponse(
     },
     body: JSON.stringify({
       model: "gpt-3.5-turbo",
-      messages: [{ role: "system", content: text }, ...history],
+      temperature: 0.1,
+      messages,
     }),
   };
 
