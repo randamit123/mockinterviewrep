@@ -35,15 +35,13 @@ export default function Interview() {
   const driveInterview = async () => {
     const intialPrompt = `
       You're InterviewerGPT, a friendly and relaxed AI tech recruiter,
-      experienced in conducting phone interviews for aspiring junior
-      front-end developers who want to improve their interview skills.
-      Your main goal is to ask me relevant and specific questions about
-      the role, industry, and our company, while naturally guiding the
-      conversation.
+      experienced in conducting phone interviews for ${jobTitle} 
+      who want to improve their interview skills. Your main goal is to 
+      ask me relevant and specific questions about the role, industry, 
+      and our company, while naturally guiding the conversation.
 
-      You are ready to help ${name} rock his interview for a junior
-      front-end engineering role at SHMOOGLE, our company that's similar
-      to Meta, Google, and Amazon.
+      You are ready to help ${name} rock his interview for a ${jobTitle} 
+      role at SHMOOGLE, our company that's similar to Meta, Google, and Amazon.
 
       While you conduct the interview, you should be encouraging, but
       remember to hold all insights and feedback until after the
@@ -65,7 +63,7 @@ export default function Interview() {
 
     const messages: any = [{ role: "system", content: intialPrompt }];
 
-    while (true) {
+    while (shouldContinueRef) {
       setIsLoading(true);
       const response = await getGPTResponse(messages);
       if (response === undefined) {
@@ -83,9 +81,15 @@ export default function Interview() {
         setIsLoading(false);
         setIsAISpeaking(true);
         await audioPlayerRef.current.play();
+
         while (!audioPlayerRef.current.ended) {
+          if (!shouldContinueRef.current) {
+            audioPlayerRef.current.pause();
+            break;
+          }
           await new Promise((resolve) => setTimeout(resolve, 1000));
         }
+
         setIsAISpeaking(false);
       }
 
@@ -99,8 +103,8 @@ export default function Interview() {
       setIsListening(false);
       console.log("User:", transcript);
       messages.push({ role: "user", content: transcript });
-      if (transcript.toLowerCase() === "end interview") {
-        break;
+      if (transcript.toLowerCase() === "end the interview") {
+        toggleInterview();
       }
     }
 
@@ -164,7 +168,7 @@ export default function Interview() {
     } else {
       console.log("end interview");
       shouldContinueRef.current = false;
-      setStage(Stage.Ending);
+      setStage(Stage.Ended);
     }
   };
 
@@ -175,27 +179,29 @@ export default function Interview() {
           className={`${
             isAISpeaking ? "animate-ping" : ""
           } absolute inline-flex h-full w-full rounded-full ${
-            isLoading ? "bg-amber-100"
-            : isListening ? "bg-green-300"
-            : "bg-slate-400"
+            isLoading
+              ? "bg-amber-100"
+              : isListening
+              ? "bg-green-300"
+              : "bg-slate-400"
           } opacity-75`}
         ></span>
-        <span className={`relative inline-flex rounded-full h-40 w-40 ${
-          isLoading ? "bg-amber-200"
-          : isListening ? "bg-green-400"
-          : "bg-slate-500"
-        }`}></span>
+        <span
+          className={`relative inline-flex rounded-full h-40 w-40 ${
+            isLoading
+              ? "bg-amber-200"
+              : isListening
+              ? "bg-green-400"
+              : "bg-slate-500"
+          }`}
+        ></span>
       </span>
-      {/* <div
-        className={`${
-          stage === Stage.Interviewing ? "animate-pulse" : ""
-        } rounded-full bg-slate-200 w-full max-h-80 max-w-80 aspect-square mx-auto`}
-      ></div> */}
       <div className="flex flex-col md:flex-row gap-8 items-center justify-center mt-12">
         <audio ref={audioPlayerRef}></audio>
+
         <input
           type="text"
-          placeholder="Your Name"
+          placeholder="Your First Name"
           className="border px-6 py-4 rounded-xl"
           onChange={onNameChange}
         />
@@ -210,7 +216,12 @@ export default function Interview() {
           data-btn-intent="primary"
           data-btn-size="large"
           onClick={toggleInterview}
-          disabled={stage === Stage.Ending || stage === Stage.Ended || name == ""}
+          disabled={
+            stage === Stage.Ending ||
+            stage === Stage.Ended ||
+            name == "" ||
+            jobTitle == ""
+          }
         >
           {stage == Stage.NotStarted
             ? "Start Interview"

@@ -1,6 +1,7 @@
 import "./globals.css";
 import { Inter } from "next/font/google";
 import Image from "next/image";
+import Link from "next/link";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -17,16 +18,19 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" suppressHydrationWarning={true}>
+      {/* TODO: add icon to window*/}=
       <body className={inter.className}>
         <div className="flex flex-col p-4">
           <nav className="">
-            <Image
-              alt="logo"
-              src="/logo.png"
-              height={506 * 0.2}
-              width={1419 * 0.2}
-              priority
-            />
+            <Link href="/">
+              <Image
+                alt="logo"
+                src="/logo.png"
+                height={506 * 0.2}
+                width={1419 * 0.2}
+                priority
+              />
+            </Link>
           </nav>
           {children}
         </div>
