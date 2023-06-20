@@ -174,7 +174,7 @@ export default function Interview() {
 
   return (
     <div className="min-h-[80vh] flex flex-col gap-12 pt-28">
-      <span className="relative flex h-40 w-40 mx-auto">
+      <span className="relative flex h-70 w-70 mx-auto">
         <span
           className={`${
             isAISpeaking ? "animate-ping" : ""
@@ -187,7 +187,7 @@ export default function Interview() {
           } opacity-75`}
         ></span>
         <span
-          className={`relative inline-flex rounded-full h-40 w-40 ${
+          className={`relative inline-flex rounded-full h-80 w-80 ${
             isLoading
               ? "bg-amber-200"
               : isListening
@@ -196,41 +196,51 @@ export default function Interview() {
           }`}
         ></span>
       </span>
-      <div className="flex flex-col md:flex-row gap-8 items-center justify-center mt-12">
+      <div className="flex flex-col md:flex-row gap-8 items-center justify-center mt-28">
         <audio ref={audioPlayerRef}></audio>
-
-        <input
-          type="text"
-          placeholder="Your First Name"
-          className="border px-6 py-4 rounded-xl"
-          onChange={onNameChange}
-        />
-        <input
-          type="text"
-          placeholder="Job Title"
-          className="border px-6 py-4 rounded-xl"
-          onChange={onJobTitleChange}
-        />
-        <button
-          className="button text-lg"
-          data-btn-intent="primary"
-          data-btn-size="large"
-          onClick={toggleInterview}
-          disabled={
-            stage === Stage.Ending ||
-            stage === Stage.Ended ||
-            name == "" ||
-            jobTitle == ""
-          }
-        >
-          {stage == Stage.NotStarted
-            ? "Start Interview"
-            : stage == Stage.Interviewing
-            ? "End Interview"
-            : stage == Stage.Ending
-            ? "Ending interview..."
-            : "Interview Ended"}
-        </button>
+        <div>
+          <input
+            type="text"
+            placeholder="First Name"
+            className="border px-6 py-4 rounded-xl"
+            onChange={onNameChange}
+          />
+          <p className="text-xs text-gray-500 pt-1 px-2">Your name of choice</p>
+        </div>
+        <div>
+          <input
+            type="text"
+            placeholder="Job Title"
+            className="border px-6 py-4 rounded-xl"
+            onChange={onJobTitleChange}
+          />
+          <p className="text-xs text-gray-500 pt-1 px-2">
+            The job you’re interviewing for!
+          </p>
+        </div>
+        <div>
+          <button
+            className="button text-lg"
+            data-btn-intent="primary"
+            data-btn-size="extra-large"
+            onClick={toggleInterview}
+            disabled={
+              stage === Stage.Ending ||
+              stage === Stage.Ended ||
+              name == "" ||
+              jobTitle == ""
+            }
+          >
+            {stage == Stage.NotStarted
+              ? "Start Interview"
+              : stage == Stage.Interviewing
+              ? "End Interview"
+              : stage == Stage.Ending
+              ? "Ending interview..."
+              : "Interview Ended"}
+          </button>
+          <p className="text-xs text-gray-500 pt-1">{`Begin!`}</p>
+        </div>
       </div>
       {stage == Stage.Ended && (
         <div className="mt-16 mx-20">

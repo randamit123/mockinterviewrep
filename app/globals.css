@@ -72,3 +72,7 @@
 .button[data-btn-size="large"] {
   --btn-padding: 12px 16px;
 }
+
+.button[data-btn-size="extra-large"] {
+  --btn-padding: 14px 18px;
+}
